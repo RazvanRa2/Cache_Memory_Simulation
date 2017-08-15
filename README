@@ -1,0 +1,66 @@
+Tema 1 SD - Razvan Radoi 311CA
+
+Mod general de implementare:
+
+Am creat 3 hashtables, folosind acelasi template pentru: cache core0, cache core1, cache de level 2
+Am creat un fisier main.cpp, in care se folosesc hashtable-urile pentru a indeplini cerinta temei
+Am creat o structura set, care reprezinta setul ce contine doua way-uri din hashtable.
+
+In main, citesc linie cu linie fisierul operations.in
+De asemenea, incarc ram-ul din fisier ca string si ca int.
+Daca operatia este "read", apelez functia read.
+Daca operatia este "write", citesc newData si apelez functia write.
+
+Functia read:
+	Urmand instructiunile de pe ocw, am implementat functia read.
+	Mai multe detalii sunt in comentariile din cod.
+
+Functia write:
+	Urmand instructiunile de pe ocw, am implementat functia read.
+	Mai multe detalii sunt in comentariile din cod.
+
+Mod de afisare a datelor cerute:
+	Fisierele ram.out si cache.out sunt create de metoda dump din hashtable si de functia 
+	dumpRamState din main.cpp. Fisierul cache.out este mereu deschis in modul de append, 
+	pentru a putea fi adaugate date la final ( de catre cache c1 si cache l2 ).
+	In ram.out metoda dumpRamState pune tot ram-ul, la final.
+
+
+Structura unui set:
+	Un set are 2 way-uri cu adrese, valori, hasBeenSet si fiecare are un dirtyBit.
+	Setul are si lru - last recently added ( u vine de la used ). Aceasta variabila
+	arata care way a fost folosit ultimul.
+	Setul are si un constructor pentru initializarea variabilelor din set cu valori
+	favorabile.
+
+Metode din hashtable:
+	put - pentru cache level1. Adauga un element in set, in way-ul specificat de lru.
+	putL2 - pentru cache level2. Adauga un element in set in way-ul specificat de lru.
+		De asemenea trimite elementele din set-urile pline, din way-ul cel mai 
+		vechi, in ram.aux ( un fisier auxiliar care pastreaza valorile din ram
+		de la adrese din ram pentru care valorile au fost updatate in timpul rularii )
+	get - returneaza valoare, dupa adresa
+	update - este la fel ca put, doar ca nu modifica lru. Se foloseste cand pentru o adresa
+		 existenta se modifica doar valoarea de la adresa respectiva.
+
+	lookUpByKey - cauta un element dupa adresa si returneaza in care way se afla
+	getDirtyBit - spune daca informatiile dintr-un way sunt dirty
+	setDirtyBit - seteaza dirtyBit-ul pentru un element
+	dump - printeaza in cache.out 
+
+Functii din main:
+	hashing functions - shifteaza cu 2 biti. Alegerea bitilor pana la upperbound se face
+	prin %HMAX, in hashtable
+	setRamValues - initializeaza valorile din ram
+	searchRamByAddress - cauta in ram ( ram-ul ne-updatat, cel initial ) o valoare
+	searchAuxRamByAddress - cauta in fisierul ram.aux, printre valorile updatate
+	functii de dump - creeaza fisierele de output
+	makeString - transforma un int ca 123 in string de tipul 0000000123
+	read si write - functiile sunt implementate conform cerintelor de pe ocw
+
+Tehnica de write-back in ram:
+	Pentru write-back am folosit un fisier auxiliar in care pastrez valorile updatate.
+	La final, inlocuiesc in ram valorile updatate la adresele lor, iar apoi afisez ram
+	in ram.out
+
+
